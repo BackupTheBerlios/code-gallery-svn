@@ -1,0 +1,489 @@
+#!/usr/bin/env python
+#
+# PROJECT	: Code Gallery
+# AUTHORS	: Lavish, Pizzak
+#
+# COPYRIGHT (C) Copyright 2005 Marco Squarcina (Lavish) and contributors
+#
+###################################################################################
+#                                                                                 #
+#  LICENSE: See COPYING file which comes with this distribution for more details  #
+#                                                                                 #
+#  This program is free software; you can redistribute it and/or modify           #
+#  it under the terms of the GNU General Public License as published by           #
+#  the Free Software Foundation; either version 2 of the License, or              #
+#  (at your option) any later version.                                            #
+#                                                                                 #
+#  This program is distributed in the hope that it will be useful,                #
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of                 #
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                  #
+#  GNU General Public License for more details.                                   #
+#                                                                                 #
+#  You should have received a copy of the GNU General Public License              #
+#  along with this program; if not, write to the Free Software                    #
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA     #
+#                                                                                 #
+###################################################################################
+#
+# Last Change by LAVISH on 14/07/2005 @ 14:20
+#
+# To Devels : 
+#             Please, insert comments and output ONLY in ENGLISH!
+#             If you are unsure about anything and you want to check it later,
+#	      add a comment in this form:
+#             
+#	      # --<DevelName>-- <Comment>
+#             
+#	      example:
+#
+#             # --lavish-- I don't think this is a nice solution...
+#
+# Lavish
+#
+####################################################################################
+
+
+
+
+#### IMPORT MODULES ####
+
+
+import sys, os, string, getopt, time
+from shutil import copyfile, move, rmtree 
+from output import yellow, green, red, blue, bold
+ 
+
+
+#### DEFINE VARS ####
+ 
+ 
+# define configuration vars
+PROG_NAME="Code-Gallery"
+PROG_VERSION="0.5-beta2"
+PROG_DESCR="An useful python program that aim to write simple and costumizable xhtml 1.0 validated page galleries"
+AUTHOR="Marco Squarcina <lavish@gmail.com>"
+
+jpg = ['jpg','jpeg','JPG','JPEG']
+png = ['png','PNG']
+ 
+
+# define default values
+
+VERBOSE = False
+GALLERY_NAME = 'Gallery'
+THUMBNAIL_SIZE = '100x75'
+MASTER_SIZE = 'original'
+IMAGE_FORMAT = 'jpg'
+IMGS_PER_LINE = 4
+CUSTOM_OPS = ''
+LAYOUT = 0
+CSS = 'blue'
+ 
+# define help var
+HELP="""format:
+ 
+ 
+-<short option> [--<extended option>]      : <description>
+ 
+-h              [--help]                   : Print this menu
+-v              [--version]                : Print program version
+-V              [--verbose]                : Print a verbose output
+-d              [--dir]                    : Change the working directory
+-n              [--gallery-name]           : Set gallery name. 'My Gallery' is the default
+-s              [--thumbnail-size]         : Set size for thumbnails
+-S              [--master-size]            : Set size for master images
+-f              [--file-type]              : Set image format (.jpg or .png). jpg is the default
+-l              [--images-per-line]        : Set the number of images per line
+-o              [--custom-cnv-options]     : Set some custom options for convert (imagemagick suite tools)
+-c              [--css]               	   : Choose a CSS style for a great gallery. Default is "blue".
+					     If you don't want a CSS use "none"
+-L              [--layout]                 : Choose a different layout for your html page. Default is pure xhtml with no javascript
+"""
+
+
+DEFAULT_CSS="""
+body{
+     background-color: #9FB6CD;
+     font-size: 75%;
+     font: bold 9pt/12pt verdana;
+     text-align: center;
+     text-weight: bold}
+
+
+table{
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 20px;
+    empty-cells: hide;
+    background : #BCD2EE;
+    border: 1px dashed #ffffff;
+    margin-left: auto; 
+    margin-right: auto}
+
+td{
+    background: #CDC9C9;
+    padding: 15px;
+    border: 1px solid #ffffff}
+
+img{
+    border-width: 1px;
+    border-color: #999999;}
+
+caption{
+    font: italic 25pt/30pt Georgia;
+    margin: auto;
+    border: 1px dashed #ffffff;
+    border-bottom: 0px;
+    font-weight: bolder;
+    padding: 5px;
+    text-align: center;
+    color: #ffffff;
+    background : #1874CD}
+
+a.fullimage {
+	font: 8pt/9pt Verdana;
+	font-weight: none;
+	color: #666666;
+	text-decoration: none}
+
+div.copyright {
+    text-align: center;
+    text-weight: bold;
+    font: italic 9pt/10pt verdana}
+"""
+
+
+#### FUNCTIONS #####
+ 
+ 
+# read_args : read command line arguments and assign vars
+def read_args():
+ 
+        # exception : if all is good read the arguments, alse print a message and exit
+        try:
+                opts, args = getopt.getopt(sys.argv[1:], "hvVd:n:s:S:f:l:o:c:L:", [ "help", "version", "verbose", "dir=", "gallery-name=", "thumbnail-size=", "master-size=", "file-type=", "images-per-line=", "custom-cnv-options=", "css=", "style=" ])
+ 
+        except getopt.GetoptError:
+                print 'Usage: for the list of all options type \'code-gallery --help\'\n'
+                sys.exit(2)
+ 
+ 
+        # define all the vars as "global". all these vars cuold be assigned by user
+        global VERBOSE
+        global GALLERY_NAME
+        global THUMBNAIL_SIZE
+        global MASTER_SIZE
+        global IMAGE_FORMAT
+        global IMGS_PER_LINE
+        global CUSTOM_OPS
+        global CSS
+        global LAYOUT 
+ 
+        # read values and assign them to vars
+        for o, a in opts:
+ 
+                if o in ("-v", "--version"):
+                        print(PROG_NAME + ' v' + PROG_VERSION + '\n')
+                        print('(C)Copyright 2005 by Lavish and Contributors\n')
+                        sys.exit(0)
+ 
+                if o in ("-h", "--help"):
+                        usage()
+                        sys.exit(0)
+ 
+                if o in ("-V", "--verbose"):
+                        VERBOSE = True
+ 
+                if o in ("-d", "--dir"):
+                        if(os.path.isdir(a)):
+                                os.chdir(a)
+                        else:
+                                print ( red('\nERROR : ' + a + ' is NOT a valid directory\n'))
+                                sys.exit(0)
+ 
+                if o in ("-n", "--gallery-name"):
+                        GALLERY_NAME = a
+ 
+                if o in ("-s", "--thumbnail-size"):
+                        THUMBNAIL_SIZE = a
+ 
+                if o in ("-S", "--master-size"):
+                        MASTER_SIZE = a
+ 
+                if o in ("-f", "--file-type"):
+                        IMAGE_FORMAT = a
+ 
+                if o in ("-l", "--images-per-line"):
+                        IMGS_PER_LINE = a
+ 
+                if o in ("-o", "--custom-cnv-options"):
+                        CUSTOM_OPS = a
+ 
+                if o in ("-c", "--css"):
+                        CSS = a
+ 
+                if o in ("-L", "--layout"):
+                        LAYOUT = int(a)
+ 
+ 
+# usage : print the help message
+def usage():
+        print ('\n' + HELP)
+        sys.exit(0)
+ 
+
+def type(f):
+	if (IMAGE_FORMAT in jpg):
+		for a in jpg:
+		       	if f.endswith(a):
+			       	return f
+	elif (IMAGE_FORMAT in png):
+		for a in png:
+			if f.endswith(a):
+				return f
+
+	else:
+		if f.endswith(IMAGE_FORMAT):
+			return f
+
+# controlla che non ci siano parametri contrastanti
+def write_css():
+        # controlla che esista il file del css_path richiesto per lo style richiesto nella dir /usr/share
+        if (CSS == 'blue'):
+		print ( green('MESSAGE : Using the default CSS'))
+		write_file('./style.css', DEFAULT_CSS)
+		
+        elif (os.path.isfile(os.path.expanduser('~/.code-gallery/css/' + CSS + '.css'))):
+                print ( green('MESSAGE : Loading >>> ' + CSS + '.css'))
+                copyfile(os.path.expanduser('~/.code-gallery/css/' + CSS + '.css'), "./style.css")
+
+	elif (os.path.isfile('/usr/share/code-gallery/css/' + CSS + '.css')):
+        	print ( green('MESSAGE : Loading >>> ' + CSS + '.css'))
+		copyfile("/usr/share/code-gallery/css/" + CSS + '.css', "./style.css")
+
+ 	else:
+                # non ha trovato il css_path ed esce dando errore
+                print ('\n' + red('ERROR : Theme NOT FOUND!') + '\n')
+                sys.exit(0)
+ 
+# header : assign a valid header (XHTML 1.0 Transitional) for the page
+def header():
+ 
+        global html_code
+ 
+        html_code = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"\n'
+        html_code += 6 * " " + '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n'
+        html_code += '<html>\n  <head>\n'
+        html_code += '    <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>\n'
+        html_code += '    <title>' + GALLERY_NAME + '</title>\n'
+        html_code += '    <link type="text/css" rel="StyleSheet" title="normal" href="style.css"/>\n'
+ 
+        # --lavish-- I don't think we need to return this var...
+        #return html_code
+ 
+def footer():
+ 
+
+        # --lavish-- maybe we need to find a better way to use some vars like html_code and n_file which are declared in other functions
+        global html_code, n_file
+ 
+        html_code += '    <br />\n'
+        html_code += 'There are ' + str(n_file) + ' images in this album.\n'
+        html_code += '    <br /><br />\n'
+        html_code += '    <div class="copyright">\n'
+        html_code += '      Page created by <a href="http://lavish.homelinux.org/projects/code-gallery.php">' + PROG_NAME + ' v' + PROG_VERSION + '</a><br />\n'
+        html_code += '      on ' + str(time.strftime("%d/%m/20%y", time.localtime()))
+        html_code += '    </div>\n'
+        html_code += '  </body>\n</html>'
+ 
+ 
+def write_file(file, input_text):
+        out_file = open(file,"w")
+        out_file.write(input_text)
+        out_file.close()
+ 
+def create_thumbnails(input_file, output_file):
+	if (VERBOSE):
+        	print ('MESSAGE : Creating thumbnails for ' + input_file) 
+
+        os.popen('convert -thumbnail ' + str(THUMBNAIL_SIZE) + ' ' + str(CUSTOM_OPS) + ' ' + input_file + ' mini/' + output_file)
+ 
+# create_big_pic : if no size for master pics has been defined, I'll keep them as thay are
+def create_big_pic(input_file, output_file):
+        if (MASTER_SIZE == 'original'):
+                if (VERBOSE):
+                        print ('MESSAGE : No size for big images defined. I\'ll let them as they are')
+                copyfile(input_file, 'big/'+ output_file);
+        else:
+                if (VERBOSE):
+                        print ('MESSAGE : Resizing ' + input_file) 
+
+		os.popen('convert -thumbnail ' + MASTER_SIZE + ' ' + input_file + ' big/' + output_file)
+
+# backup original pics into .backup_files/
+def create_backup(input_file):
+	if (VERBOSE):
+        	print ('MESSAGE : mv >>> ' + input_file + ' to >>> backup_files/' + input_file)
+	move(input_file, 'backup_files/' + input_file)
+
+
+# create_dir : this function will create a directory. if it already exists it will ask what to do
+def create_dir(path_name):
+ 
+        if (os.path.isdir(path_name)):
+		print ( yellow('WARNING : The path "' + path_name + '" already exists! Delete or move it before going on, thanks'))
+ 
+                while (True): 
+ 
+                        action = (raw_input('Shall I remove it? [y/n] '))
+ 
+                        if (action == 'y'):
+                                rmtree(path_name)
+                                break
+                        elif (action == 'n'):
+                                sys.exit(0)
+                        else:
+                                print ( red('\nERROR : Wrong option\n'))
+ 
+        print ( green('MESSAGE : Creating directory >>> ' + path_name ))
+        while (os.path.isdir(path_name)):
+                pass
+        os.makedirs(path_name)
+ 
+
+def progress(i):
+
+	global n_file
+	
+	if (VERBOSE == False):
+		print('\r' +  blue(str(100 * int(i) / int(n_file)) + '%')),
+		sys.stdout.flush()
+             
+
+def write_html():
+
+
+	global html_code, file_list
+
+	
+	i = 0
+	
+	# Layout n.0 Pure xhtml 1.0 transitional with no javascript at all. This is the default
+	if (LAYOUT == 0):
+        
+		html_code += '  </head>\n\n  <body>\n'
+	        html_code += '    <table>\n'
+        	html_code += '      <caption>' + string.replace(GALLERY_NAME, '_', ' ') + '</caption>\n'
+		html_code += '      <tr align="center" valign="middle">\n'
+ 
+	        for file in file_list:
+ 
+			if (i != 0 and i%int(IMGS_PER_LINE) == 0):
+				html_code += '      </tr>\n'
+        	                html_code += '      <tr align="center" valign="middle">\n'
+
+                	html_code += '        <td>\n'
+	                html_code += '          <a href="big/' + GALLERY_NAME + '-' + str(i) + '.' + IMAGE_FORMAT + '" target="_blank">'
+			html_code += '<img src="mini/' + GALLERY_NAME + '-mini-' + str(i) + '.' + IMAGE_FORMAT + '" alt=""/></a>\n'
+        	        html_code += '        </td>\n'
+
+			i += 1
+
+		html_code += '      </tr>\n'
+ 		html_code += '    </table>\n'
+        	html_code += '    <br />\n'
+
+		footer()
+        
+		write_file('index.html', html_code)
+
+	# Layout n.1 xhtml 1.0 transitional with some javascript in order to open pop-up windows
+	# --lavish-- we have to write this code, obviously ;)
+	elif (LAYOUT == 2):
+        
+		html_code += '  </head>\n\n  <body>\n'
+	        html_code += '    <table>\n'
+        	html_code += '      <caption>' + string.replace(GALLERY_NAME, '_', ' ') + '</caption>\n'
+		html_code += '      <tr align="center" valign="middle">\n'
+ 
+	        for file in file_list:
+ 
+			if (i != 0 and i%int(IMGS_PER_LINE) == 0):
+				html_code += '      </tr>\n'
+        	                html_code += '      <tr align="center" valign="middle">\n'
+
+                	html_code += '        <td>\n'
+	                html_code += '          <a href="big/' + GALLERY_NAME + '-' + str(i) + '.' + IMAGE_FORMAT + '" target="_blank">'
+			html_code += '<img src="mini/' + GALLERY_NAME + '-mini-' + str(i) + '.' + IMAGE_FORMAT + '" alt=""/></a>\n'
+        	        html_code += '        </td>\n'
+
+			i += 1
+
+		html_code += '      </tr>\n'
+ 		html_code += '    </table>\n'
+        	html_code += '    <br />\n'
+
+		footer()
+        
+		write_file('index.html', html_code)
+
+	else:
+		print ('\n' + red('ERROR : This layout doesn\'t exists!') + '\n')
+		sys.exit(0)
+      
+
+def main():
+	
+	global n_file, file_list
+	
+	read_args()
+	
+	file_list = os.listdir(os.curdir)
+	file_list = filter(type, file_list)
+	n_file = len(file_list)
+
+	if (n_file == 0):
+		print ( red('\nERROR : No ' + IMAGE_FORMAT + ' images found\n'))
+		sys.exit(0)
+
+
+        create_dir('mini')
+        create_dir('big')
+        create_dir('backup_files')
+	
+	print	
+
+	i = 0
+
+        for file in file_list:
+
+		progress(i+1)
+
+		# create thumbnails and move it
+                create_thumbnails(file, GALLERY_NAME + '-mini-' + str(i) + '.' + IMAGE_FORMAT)
+ 
+                # create big image and move it
+                create_big_pic(file, GALLERY_NAME + '-' + str(i) + '.' + IMAGE_FORMAT)
+ 
+		create_backup(file)
+
+		i += 1
+
+	# Now start with html code
+
+	header()
+	
+ 	write_html()
+
+        print (green('... DONE! \n\nMESSAGE : Writing index.html'))
+       
+	if (CSS == 'none'):
+		print ( yellow('WARNING : No CSS defined'))
+	else:
+		print ( green('MESSAGE : Writing css style'))
+		write_css()
+ 
+
+if __name__ == '__main__':
+ 
+	main()
