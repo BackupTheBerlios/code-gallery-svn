@@ -101,8 +101,7 @@ HELP="""format:
 """
 
 
-DEFAULT_CSS="""
-body{
+DEFAULT_CSS="""body{
      background-color: #9FB6CD;
      font-size: 75%;
      font: bold 9pt/12pt verdana;
