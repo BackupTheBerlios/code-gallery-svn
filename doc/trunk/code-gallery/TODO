@@ -1,0 +1,15 @@
+Todo list:
+
+LEGEND:
+
+o. [**] MANDATORY
+o. [UR] Urgent
+o. [OP] Optional
+o. [OK] Done (version where the feature were implemented in - author)
+
+
+
+[UR] Write more CSS
+[UR] Write some layouts in order to generate different page styles
+[OP] Develop an ebuild for Code-Gallery
+
