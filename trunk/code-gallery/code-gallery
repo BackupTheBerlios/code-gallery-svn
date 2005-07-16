@@ -304,7 +304,10 @@ def write_file(file, input_text):
 def create_thumbnails(input_file, output_file):
 	if (VERBOSE):
         	print ('MESSAGE : Creating thumbnails for ' + input_file) 
-	
+
+	# --lavish-- We have to implement a good system	to check if imagemagic has been installed or not.
+	#	     jht from #gentoo (azzurra) sent a patch that checked the output of os.popen, but it doesn't work
+	#	     Any idea?
         os.popen('convert -thumbnail ' + str(THUMBNAIL_SIZE) + ' ' + str(CUSTOM_OPS) + ' ' + input_file + ' mini/' + output_file)
  
 # create_big_pic : if no size for master pics has been defined, I'll keep them as thay are
