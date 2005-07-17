@@ -17,8 +17,6 @@ else
 	exit 0
 fi
 
-#handle=`which convert | grep which` 
-
 if [[ -z $(type -p convert) ]]; then
 	echo -en "\n\033[0;31m>>> [WARNING] : Looks like you don't have ImageMagick installed.\n                Download it from www.imagemagick.org in order to use code-gallery\033[m\n\n"
 fi
