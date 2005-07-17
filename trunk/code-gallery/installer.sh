@@ -1,8 +1,19 @@
 #!/bin/sh
 
-echo -en "\n\033[0;31m>>> [WARNING] : THIS INSTALLER WILL CREATE A NEW DIR ON YOUR SYSTEM!\033[m\n\nIf you are running it by root, /usr/share/code-gallery will be crated, otherwise, if you are running in from user it will create a dir in your home ~/.code-gallery.\n\n>>> DO YOU WANT TO CONTINUE? [y/n]  "
-
+if [[ -n $(type -p dialog) ]]; then
+	dialog --backtitle "Code-Gallery Installer" --yesno "THIS INSTALLER WILL CREATE A NEW DIR ON YOUR SYSTEM!\n\nIf you are running it by root, /usr/share/code-gallery will be crated, otherwise, if you are running in from user it will create a dir in your home ~/.code-gallery.\n\nDO YOU WANT TO CONTINUE?" 0 0
+	case $? in
+		0) C=y ;;
+		1) C=n ;;
+		255) exit 0 ;;
+	esac
+	
+else
+	echo -en "\n\033[0;31m>>> [WARNING] : THIS INSTALLER WILL CREATE A NEW DIR ON YOUR SYSTEM!\033[m\n\nIf you are running it by root, /usr/share/code-gallery will be crated, otherwise, if you are running in from user it will create a dir in your home ~/.code-gallery.\n\n>>> DO YOU WANT TO CONTINUE? [y/n]  "
 read C
+fi
+
+clear
 
 if [[ $C = y ]]; then
 
