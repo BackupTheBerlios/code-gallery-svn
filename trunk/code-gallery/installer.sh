@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo -en "\n\033[0;31m>>> WARNING : THIS INSTALLER WILL CREATE A NEW DIR ON YOUR SYSTEM!\033[m\n\nIf you are running it by root, /usr/share/code-gallery will be crated, otherwise, if you are running in from user it will create a dir in your home ~/.code-gallery.\n\n>>> DO YOU WANT TO CONTINUE? [y/n]  "
+echo -en "\n\033[0;31m>>> [WARNING] : THIS INSTALLER WILL CREATE A NEW DIR ON YOUR SYSTEM!\033[m\n\nIf you are running it by root, /usr/share/code-gallery will be crated, otherwise, if you are running in from user it will create a dir in your home ~/.code-gallery.\n\n>>> DO YOU WANT TO CONTINUE? [y/n]  "
 
 read C
 
@@ -17,9 +17,15 @@ else
 	exit 0
 fi
 
+#handle=`which convert | grep which` 
+
+if [[ -z $(type -p convert) ]]; then
+	echo -en "\n\033[0;31m>>> [WARNING] : Looks like you don't have ImageMagick installed.\n                Download it from www.imagemagick.org in order to use code-gallery\033[m\n\n"
+fi
+
 if [[ -d $DIR ]]; then
 	
-	echo -en "\033[0;36m>>> WARNING : $DIR already exist.\033[m\nShall I remove it? [y/n]  "
+	echo -en "\033[0;36m>>> [WARNING] : $DIR already exist.\033[m\nShall I remove it? [y/n]  "
 	read C
 
 	if [[ $C != y ]]; then
@@ -37,12 +43,12 @@ cp ./css/* $DIR/css/
 
 if [[ $UID -eq 0 ]]; then
 
-	echo -en "\033[0;32m>>> MESSAGE : Coping exec file to /usr/bin/\033[m\n"
+	echo -en "\033[0;32m>>> [MESSAGE] : Coping exec file to /usr/bin/\033[m\n"
 	cp ./code-gallery /usr/bin/code-gallery
 
 else
 
-	echo -en "\033[0;36m>>> WARNING : You don't have the permission to copy code-gallery into /usr/bin/\n>>> I'll copy it into $HOME/bin/\033[m\n"
+	echo -en "\033[0;36m>>> [WARNING] : You don't have the permission to copy code-gallery into /usr/bin/\n>>> I'll copy it into $HOME/bin/\033[m\n"
 	if [[ -d $HOME/bin ]]; then
 		cp ./code-gallery $HOME/bin
 	else
@@ -52,4 +58,4 @@ else
 
 fi
 
-echo -ne "\n\033[1;32m>>> MESSAGE : ALL DONE!\033[m\n\n"
+echo -ne "\n\033[1;32m>>> [MESSAGE] : ALL DONE!\033[m\n\n"
