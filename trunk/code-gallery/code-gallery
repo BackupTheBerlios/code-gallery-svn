@@ -25,7 +25,7 @@
 #                                                                                 #
 ###################################################################################
 #
-# Last Change by PIZZAK on 17/07/2005 @ 02:49
+# Last Change by LAVISH on 17/07/2005 @ 21:55
 #
 # To Devels : 
 #             Please, insert comments and output ONLY in ENGLISH!
@@ -155,6 +155,20 @@ div.copyright {
 #### FUNCTIONS #####
  
  
+def print_msg(input_text):
+	print ( green('[MESSAGE]') + ' ---  ' + input_text)
+
+
+def print_warn(input_text):
+	print ( yellow('[WARNING]') + ' ---  ' + input_text)
+
+
+def print_err(input_text):
+	print ( red('[ERROR]') + ' ---  ' + input_text)
+
+
+
+
 # read_args : read command line arguments and assign vars
 def read_args():
  
@@ -197,7 +211,8 @@ def read_args():
                         if(os.path.isdir(a)):
                                 os.chdir(a)
                         else:
-                                print ( red('\n[ERROR] : ' + a + ' is NOT a valid directory\n'))
+				print
+                                print_err(a + ' is NOT a valid directory\n')
                                 sys.exit(0)
  
                 if o in ("-n", "--gallery-name"):
@@ -249,20 +264,21 @@ def type(f):
 def write_css():
         # controlla che esista il file del css_path richiesto per lo style richiesto nella dir /usr/share
         if (CSS == 'blue'):
-		print ( green('[MESSAGE] : Using the default CSS'))
+		print_msg('Using the default CSS')
 		write_file('./style.css', DEFAULT_CSS)
 		
         elif (os.path.isfile(os.path.expanduser('~/.code-gallery/css/' + CSS + '.css'))):
-                print ( green('[MESSAGE] : Loading >>> ' + CSS + '.css'))
+                print_msg('Loading >>> ' + CSS + '.css')
                 copyfile(os.path.expanduser('~/.code-gallery/css/' + CSS + '.css'), "./style.css")
 
 	elif (os.path.isfile('/usr/share/code-gallery/css/' + CSS + '.css')):
-        	print ( green('[MESSAGE] : Loading >>> ' + CSS + '.css'))
+        	print_msg('Loading >>> ' + CSS + '.css')
 		copyfile("/usr/share/code-gallery/css/" + CSS + '.css', "./style.css")
 
  	else:
                 # non ha trovato il css_path ed esce dando errore
-                print ('\n' + red('[ERROR] : Theme NOT FOUND!') + '\n')
+		print
+                print_err('Theme NOT FOUND!\n')
                 sys.exit(0)
  
 # header : assign a valid header (XHTML 1.0 Transitional) for the page
@@ -303,35 +319,36 @@ def write_file(file, input_text):
  
 def create_thumbnails(input_file, output_file):
 	if (VERBOSE):
-        	print ('[MESSAGE] : Creating thumbnails for ' + input_file) 
+        	print_msg('Creating thumbnails for ' + input_file) 
 
 	# --lavish-- Ok, looks like it works in this way :) Many thanks to Pizzak and jht
 	handle = os.popen('convert -thumbnail ' + str(THUMBNAIL_SIZE) + ' ' + str(CUSTOM_OPS) + ' ' + input_file + ' mini/' + output_file + ' 2>/dev/null')
 	status = handle.close()
 	if status is not None:
-		print ( red('\n[ERROR] : Looks like you don\'t have ImageMagick installed. Download it from: http://www.imagemagick.org/\n'))
+		print_err('Looks like you don\'t have ImageMagick installed. Download it from: http://www.imagemagick.org/\n')
 		sys.exit(1)
  
 # create_big_pic : if no size for master pics has been defined, I'll keep them as thay are
 def create_big_pic(input_file, output_file):
         if (MASTER_SIZE == 'original'):
                 if (VERBOSE):
-                        print ('[MESSAGE] : No size for big images defined. I\'ll let them as they are')
+                        print_msg('No size for big images defined. I\'ll let them as they are')
                 copyfile(input_file, 'big/'+ output_file);
         else:
                 if (VERBOSE):
-                        print ('[MESSAGE] : Resizing ' + input_file) 
+                        print_msg('Resizing ' + input_file) 
 
 		os.popen('convert -thumbnail ' + MASTER_SIZE + ' ' + input_file + ' big/' + output_file + ' 2>/dev/null')
 		status = handle.close()
 		if status is not None:
-			print ( red('\n[ERROR] : Looks like you don\'t have ImageMagick installed. Download it from: http://www.imagemagick.org/\n'))
+			print
+			print_err('Looks like you don\'t have ImageMagick installed. Download it from: http://www.imagemagick.org/\n')
 			sys.exit(1)
 
 # backup original pics into .backup_files/
 def create_backup(input_file):
 	if (VERBOSE):
-        	print ('[MESSAGE] : mv >>> ' + input_file + ' to >>> backup_files/' + input_file)
+        	print_msg('mv >>> ' + input_file + ' to >>> backup_files/' + input_file)
 	move(input_file, 'backup_files/' + input_file)
 
 
@@ -339,7 +356,7 @@ def create_backup(input_file):
 def create_dir(path_name):
  
         if (os.path.isdir(path_name)):
-		print ( yellow('[WARNING] : The path "' + path_name + '" already exists! Delete or move it before going on, thanks'))
+		print_warn('The path "' + path_name + '" already exists! Delete or move it before going on, thanks')
  
                 while (True): 
  
@@ -351,9 +368,9 @@ def create_dir(path_name):
                         elif (action == 'n'):
                                 sys.exit(0)
                         else:
-                                print ( red('\n[ERROR] : Wrong option\n'))
+                                print_err('\nWrong option\n')
  
-        print ( green('[MESSAGE] : Creating directory >>> ' + path_name ))
+        print_msg('Creating directory >>> ' + path_name )
         while (os.path.isdir(path_name)):
                 pass
         os.makedirs(path_name)
@@ -436,7 +453,8 @@ def write_html():
 		write_file('index.html', html_code)
 
 	else:
-		print ('\n' + red('[ERROR] : This layout doesn\'t exists!') + '\n')
+		print
+		print_err('This layout doesn\'t exists!\n')
 		sys.exit(0)
       
 
@@ -451,7 +469,8 @@ def main():
 	n_file = len(file_list)
 
 	if (n_file == 0):
-		print ( red('\n[ERROR] : No ' + IMAGE_FORMAT + ' images found\n'))
+		print
+		print_err('No ' + IMAGE_FORMAT + ' images found\n')
 		sys.exit(0)
 
 
@@ -482,13 +501,14 @@ def main():
 	header()
 	
  	write_html()
-
-        print (green('... DONE! \n\n[MESSAGE] : Writing index.html'))
+	print '\n'
+        print_msg('... DONE! \n')
+	print_msg('Writing index.html')
        
 	if (CSS == 'none'):
-		print ( yellow('[WARNING] : No CSS defined'))
+		print_warn('No CSS defined')
 	else:
-		print ( green('[MESSAGE] : Writing css style'))
+		print_msg('Writing css style')
 		write_css()
  
 
