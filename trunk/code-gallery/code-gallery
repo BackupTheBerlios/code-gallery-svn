@@ -407,7 +407,7 @@ def write_html():
 
 	# Layout n.1 xhtml 1.0 transitional with some javascript in order to open pop-up windows
 	# --lavish-- we have to write this code, obviously ;)
-	elif (LAYOUT == 2):
+	elif (LAYOUT == 1):
         
 		html_code += '  </head>\n\n  <body>\n'
 	        html_code += '    <table>\n'
