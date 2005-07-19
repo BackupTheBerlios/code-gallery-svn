@@ -43,34 +43,43 @@
 ####################################################################################
 
 
-import time
-import gtk
-import gobject
-import gtk.glade
-import MainWindow
 
-class SplashWindow:
-	def __init__(self):
-		xml = gtk.glade.XML('glade/splashwindow.glade')
+from utils import *
+import sys
 
-		self.SplashWindow = xml.get_widget('SplashWindow')
-		
-		self.prgLoading = xml.get_widget('prgLoading')
 
-		self.timer = gobject.timeout_add(25, self.prg_timeout, self)
+# Checks for pygtk presence
+try:
+	import pygtk
+	print_ok('PyGTK found')
+except ImportError:
+	print_err('PyGTK was not found in your system, please install it')
 
-	def prg_timeout(self, args):
-		newval = self.prgLoading.get_fraction() + 0.02
-		if newval >= 1.0:
-			MainWindow.MainWindow()
-			self.destroy(self)
-			return False
-		else:
-			self.prgLoading.set_fraction(newval)
-			return True
-		
+# Checks for pygtk version
+try:
+	pygtk.require('2.0')
+	print_ok('PyGTK 2.0 or greater found')
+except:
+	print_err('PyGTK is installed but the version is not 2.0 or greater')
 
+# Checks for pyGTK glade support
+try:
+	import gtk
+	import gtk.glade
+	print_ok('PyGTK was compiled with glade support')
+except ImportError:
+	print_err('PyGTK was not compiled with glade support')
+
+#Psyco support
+try:
+	import psyco
+	psyco.full()
+	print_ok('Pysco found, JIT compiling enabled')
+except ImportError:
+	print_err('Psyco NOT found, JIT compiling disabled')
+
+# Ok, final initialization
 if __name__ == '__main__':
-	cls = SplashWindow()
+	import MainWindow
+	startup = MainWindow.MainWindow()
 	gtk.main()
-			
