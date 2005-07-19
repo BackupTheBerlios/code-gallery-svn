@@ -25,7 +25,7 @@
 #                                                                                 #
 ###################################################################################
 #
-# Last Change by LAVISH on 17/07/2005 @ 21:55
+# Last Change by LAVISH on 19/07/2005 @ 13:25
 #
 # To Devels : 
 #             Please, insert comments and output ONLY in ENGLISH!
@@ -50,8 +50,6 @@
 
 import sys, os, string, getopt, time
 from shutil import copyfile, move, rmtree 
-from output import yellow, green, red, blue, bold
- 
 
 
 #### DEFINE VARS ####
@@ -155,18 +153,31 @@ div.copyright {
 #### FUNCTIONS #####
  
  
-def print_msg(input_text):
-	print ( green('[MESSAGE]') + ' ---  ' + input_text)
+try:
+	from output import yellow, green, red, blue, bold
+
+	def print_msg(input_text):
+		print ( green('[MESSAGE]') + ' ---  ' + input_text)
 
 
-def print_warn(input_text):
-	print ( yellow('[WARNING]') + ' ---  ' + input_text)
+	def print_warn(input_text):
+		print ( yellow('[WARNING]') + ' ---  ' + input_text)
 
 
-def print_err(input_text):
-	print ( red('[ERROR]') + ' ---  ' + input_text)
+	def print_err(input_text):
+		print ( red('[ERROR]') + ' ---  ' + input_text)
+
+except ImportError:
+        def print_msg(input_text):
+                print ('[MESSAGE] ---  ' + input_text)
 
 
+        def print_warn(input_text):
+                print ('[WARNING] ---  ' + input_text)
+
+
+        def print_err(input_text):
+                print ('[ERROR] ---  ' + input_text)
 
 
 # read_args : read command line arguments and assign vars
@@ -381,7 +392,7 @@ def progress(i):
 	global n_file
 	
 	if (VERBOSE == False):
-		print('\r' +  blue(str(100 * int(i) / int(n_file)) + '%')),
+		print('\r>>> ' +  (str(100 * int(i) / int(n_file)) + '%')),
 		sys.stdout.flush()
              
 
@@ -427,7 +438,18 @@ def write_html():
 	elif (LAYOUT == 1):
         
 		html_code += '  </head>\n\n  <body>\n'
-	        html_code += '    <table>\n'
+		html_code += '''
+	<script type="text/javascript">
+
+		var style = "status=no, menubar=no, toolbar=no scrollbar=no";
+
+		function Popup(file) 
+		{
+		        window.open(file, "", style);
+		}
+
+	</script>'''
+	        html_code += '\n    <table>\n'
         	html_code += '      <caption>' + string.replace(GALLERY_NAME, '_', ' ') + '</caption>\n'
 		html_code += '      <tr align="center" valign="middle">\n'
  
@@ -438,7 +460,7 @@ def write_html():
         	                html_code += '      <tr align="center" valign="middle">\n'
 
                 	html_code += '        <td>\n'
-	                html_code += '          <a href="big/' + GALLERY_NAME + '-' + str(i) + '.' + IMAGE_FORMAT + '" target="_blank">'
+	                html_code += '          <a href="javascript:Popup(\'big/' + GALLERY_NAME + '-' + str(i) + '.' + IMAGE_FORMAT + '\')">'
 			html_code += '<img src="mini/' + GALLERY_NAME + '-mini-' + str(i) + '.' + IMAGE_FORMAT + '" alt=""/></a>\n'
         	        html_code += '        </td>\n'
 
