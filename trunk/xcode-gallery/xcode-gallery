@@ -1,0 +1,83 @@
+#!/usr/bin/env python
+
+import gtk
+
+class xcodegallery:
+	def make_buttonbox(self):
+		box = gtk.HBox()
+		
+		cmdAbout = gtk.Button("About")
+		box.pack_start(cmdAbout, False, False, 0)
+		
+		cmdExit = gtk.Button("Exit")
+		box.pack_start(cmdExit)
+		
+		cmdGenerate = gtk.Button("Generate")
+		box.pack_start(cmdGenerate)
+
+		return box
+
+	def make_gui_table(self):
+		table = gtk.Table(rows=8, columns=2)
+
+		imgXcode = gtk.Image()
+		imgXcode.set_from_file("xcode.png")
+		table.attach(imgXcode, 1, 2, 0, 1)
+
+		lblGalleryname = gtk.Label("Gallery name")
+		self.txtGalleryname = gtk.Entry()
+		table.attach(lblGalleryname, 0, 1, 1, 2)
+		table.attach(self.txtGalleryname, 1, 2, 1, 2)
+
+		lblDestination = gtk.Label("Destination")
+		self.txtDestination = gtk.Entry()
+		table.attach(lblDestination, 0, 1, 2, 3)
+		table.attach(self.txtDestination, 1, 2, 2, 3)
+
+		lblImageType = gtk.Label("Image Type")
+		table.attach(lblImageType, 0, 1, 3, 4)
+
+		lblThumbnail = gtk.Label("Thumbnail size")
+		self.cboThumbnail = gtk.ComboBoxEntry()
+		table.attach(lblThumbnail, 0, 1, 4, 5)
+		table.attach(self.cboThumbnail, 1, 2, 4, 5)
+
+		lblMaster = gtk.Label("Master size:")
+		self.cboMaster = gtk.ComboBoxEntry()
+		table.attach(lblMaster, 0, 1, 5, 6)
+		table.attach(self.cboMaster, 1, 2, 5, 6)
+
+		lblCSS = gtk.Label("CSS support")
+		self.chkCSS = gtk.CheckButton("Enable CSS 2 stylesheet support")
+		table.attach(lblCSS, 0, 1, 6, 7)
+		table.attach(self.chkCSS, 1, 2, 6, 7)
+
+		return table
+	
+	def make_contents_box(self):
+		box = gtk.VBox()
+		box.pack_start(self.make_gui_table())
+		box.pack_start(self.make_buttonbox())
+		return box
+
+		
+	def __init__(self):
+		#Prepares main window
+		self.MainWindow = gtk.Window(gtk.WINDOW_TOPLEVEL)
+		self.MainWindow.set_title(':: xcode-gallery ::')
+		self.MainWindow.connect("destroy", self.destroy_app)
+
+		cBox = self.make_contents_box()
+
+		self.MainWindow.add(cBox)
+		self.MainWindow.show_all()
+
+	
+	def destroy_app(self, arg):
+		gtk.main_quit()
+
+
+if __name__ == '__main__':
+	startup = xcodegallery()
+	gtk.main()
+		
