@@ -7,22 +7,24 @@ class xcodegallery:
 		box = gtk.HBox()
 		
 		cmdAbout = gtk.Button("About")
-		box.pack_start(cmdAbout, False, False, 0)
+		cmdAbout.connect("clicked", self.about_xcode)
+		box.pack_start(cmdAbout)
+
+		hsep = gtk.HSeparator()
+		box.pack_start(hsep)
 		
 		cmdExit = gtk.Button("Exit")
+		cmdExit.connect("clicked", self.exit_xcode)
 		box.pack_start(cmdExit)
 		
 		cmdGenerate = gtk.Button("Generate")
+		cmdGenerate.connect("clicked", self.create_gallery)
 		box.pack_start(cmdGenerate)
 
 		return box
 
 	def make_gui_table(self):
 		table = gtk.Table(rows=8, columns=2)
-
-		imgXcode = gtk.Image()
-		imgXcode.set_from_file("xcode.png")
-		table.attach(imgXcode, 1, 2, 0, 1)
 
 		lblGalleryname = gtk.Label("Gallery name")
 		self.txtGalleryname = gtk.Entry()
@@ -75,6 +77,15 @@ class xcodegallery:
 	
 	def destroy_app(self, arg):
 		gtk.main_quit()
+
+	def create_gallery(self, args):
+		pass
+	
+	def about_xcode(self, args):
+		pass
+	
+	def exit_xcode(self, args):
+		gtk.main_quit() 
 
 
 if __name__ == '__main__':
