@@ -1,8 +1,114 @@
 #!/usr/bin/env python
+#
+# PROJECT	: Code Gallery
+# AUTHORS	: Lavish, Pizzak
+#
+# COPYRIGHT (C) Copyright 2005 Marco Squarcina (Lavish) and contributors
+# 
+# Xcode-gallery: this module is part of the code-gallery project and is
+# currently developed and maintained by Lorenzo Villani (Arbiter)
+#    MAIL: arbitermc@gmail.com
+#    WEB:  arbitermc.homelinux.org
+#
+###################################################################################
+#                                                                                 #
+#  LICENSE: See COPYING file which comes with this distribution for more details  #
+#                                                                                 #
+#  This program is free software; you can redistribute it and/or modify           #
+#  it under the terms of the GNU General Public License as published by           #
+#  the Free Software Foundation; either version 2 of the License, or              #
+#  (at your option) any later version.                                            #
+#                                                                                 #
+#  This program is distributed in the hope that it will be useful,                #
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of                 #
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                  #
+#  GNU General Public License for more details.                                   #
+#                                                                                 #
+#  You should have received a copy of the GNU General Public License              #
+#  along with this program; if not, write to the Free Software                    #
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA     #
+#                                                                                 #
+###################################################################################
+#
+# Last Change by ARBITER on Jun 25, 2005 @ 16:00
+#
+# To Devels : 
+#             Please, insert comments and output ONLY in ENGLISH!
+#             If you are unsure about anything and you want to check it later,
+#	      add a comment in this form:
+#             
+#	      # --<DevelName>-- <Comment>
+#             
+#	      example:
+#
+#             # --lavish-- I don't think this is a nice solution...
+#
+# Lavish
+#
+####################################################################################
+#
+#
 
-import gtk
+import sys
 
+def print_greet():
+	GREET="""
+	Welcome to xcode-gallery the official gui for code-gallery
+	developed by the code-gallery team.
+	(C) Copyright 2005 by the code-gallery team
+	"""
+	print(GREET)
+
+# Useful output routines
+try:
+	from output import *
+	def p_err(msg):
+		print(blue('[ ')+red('**')+blue(' ] ')+msg)
+		sys.exit(1)
+	def p_warn(msg):
+		print(blue('[ ')+yellow('!!')+blue(' ] ')+msg)
+	def p_ok(msg):
+		print(blue('[ ')+green('ok')+blue(' ] ')+msg)
+except ImportError:
+	def p_err(msg):
+		print('[ ** ] '+msg)
+		sys.exit(1)
+	def p_warn(msg):
+		print('[ !! ] '+msg)
+	def p_ok(msg):
+		print('[ ok ]'+msg)
+
+# Checks for pyGTK presence, if not found raise a fatal error
+try:
+	import gtk
+	p_ok('Importing pygtk was successful')
+except ImportError:
+	p_err('Cannot import pygtk, do you have it installed?')
+
+
+# Checks for psyco jit presence, if not found warns
+# the user but continue the execution
+try:
+	import psyco
+	psyco.full()
+	p_ok('Psyco found. JIT compilation support enabled')
+except:
+	p_warn('Psyco not found. JIT compilation support is disabled')
+		
+
+# This is the main xcode-gallery class
 class xcodegallery:
+	
+	# We create an About dialog useful for users that wants to know who we are ;)
+	def about_dlg(self):
+		dlg = gtk.Dialog("About", None, gtk.DIALOG_MODAL, (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+		dlg.vbox.pack_start(gtk.Label("(C) Copyright 2005 by Code-Gallery team"))
+		dlg.show_all()
+		dlg.run()
+		dlg.destroy()
+
+		
+	# Creates a Horizontal Box that contains the action buttons	
 	def make_buttonbox(self):
 		box = gtk.HBox()
 		
@@ -22,7 +128,8 @@ class xcodegallery:
 		box.pack_start(cmdGenerate)
 
 		return box
-
+	
+	# Creates the main gui table
 	def make_gui_table(self):
 		table = gtk.Table(rows=8, columns=2)
 
@@ -56,6 +163,7 @@ class xcodegallery:
 
 		return table
 	
+	# This is a container for buttons panel and gui table
 	def make_contents_box(self):
 		box = gtk.VBox()
 		box.pack_start(self.make_gui_table())
@@ -75,20 +183,28 @@ class xcodegallery:
 		self.MainWindow.show_all()
 
 	
+	# Called when closing the application
 	def destroy_app(self, arg):
 		gtk.main_quit()
 
+	# Called when the user press the "Create Gallery" button
 	def create_gallery(self, args):
 		pass
 	
+	# This is called when the user press the "About" button
 	def about_xcode(self, args):
-		pass
-	
+		self.about_dlg()
+		
+	# Called when we need to close the application
 	def exit_xcode(self, args):
+		# Quit from the gtk loop
 		gtk.main_quit() 
+		# Ensure that we close with a normal status
+		sys.exit(0)
 
 
 if __name__ == '__main__':
+	print_greet()
 	startup = xcodegallery()
 	gtk.main()
 		
