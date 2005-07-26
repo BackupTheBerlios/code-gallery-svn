@@ -30,7 +30,7 @@
 #                                                                                 #
 ###################################################################################
 #
-# Last Change by ARBITER on Jun 25, 2005 @ 16:00
+# Last Change by ARBITER on Jun 26, 2005 @ 12:58
 #
 # To Devels : 
 #             Please, insert comments and output ONLY in ENGLISH!
@@ -102,6 +102,9 @@ class xcodegallery:
 	# We create an About dialog useful for users that wants to know who we are ;)
 	def about_dlg(self):
 		dlg = gtk.Dialog("About", None, gtk.DIALOG_MODAL, (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+		imgLogo = gtk.Image()
+		imgLogo.set_from_file("code-gallery.png")
+		dlg.vbox.pack_start(imgLogo)
 		dlg.vbox.pack_start(gtk.Label("(C) Copyright 2005 by Code-Gallery team"))
 		dlg.show_all()
 		dlg.run()
