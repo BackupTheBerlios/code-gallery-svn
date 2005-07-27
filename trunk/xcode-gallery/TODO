@@ -7,3 +7,6 @@ o. [UR] Urgent
 o. [OP] Optional
 o. [OK] Done (version where the feature were implemented in - author)
 
+o. [UR] Implement an internal output window
+o. [UR] Fix a problem with code-gallery: use of os.popen breaks the pipe
+   but os.system not, Why?

@@ -9,16 +9,8 @@ URL for downloads.
 * Python: A minimum required version of the interpreter
   is 2.3.5
 
-* WxPython - the wxWidgets python bindings: 
-  For windows and Machintosh this is the only requirement,
-  in fact, WxPython includes the wxWidgets library inside 
-  the package. On linux you will need to install the wxWidget
-  package, you can freely choose to compile it with gtk+ 1.2 
-  ir gtk 2.x support. For linux there are packages only for RPM
-  based distributions and an ebuild for gentoo linux
-  distro. NON LINUX USERS NOTE: (MAC) You don't have to install
-  the X server that comes with Macintosh because wxWidgets
-  uses native Cocoa Frameworks (not gtk) - (WINDOWS) Same
-  as MAC in fact, on Windows, wxWidgets uses native MFC
-  Framework to create the interface.
+* GTK 2: A minimum required version of the GTK Libraries
+  is 2.6.0
 
+* PyGTK - The GTK Python bindings: A minimum required
+  version for these bindings is 2.6.0

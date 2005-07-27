@@ -49,15 +49,16 @@
 #
 #
 
-import sys
+# imports standard modules
+import sys, os
 
-def print_greet():
-	GREET="""
-	Welcome to xcode-gallery the official gui for code-gallery
-	developed by the code-gallery team.
-	(C) Copyright 2005 by the code-gallery team
-	"""
-	print(GREET)
+# Default greeting
+GREET="""
+\t\txcode-gallery
+Welcome to xcode-gallery the official gui for code-gallery
+developed by the code-gallery team.
+(C) Copyright 2005 by the code-gallery team
+"""
 
 # Useful output routines
 try:
@@ -65,6 +66,8 @@ try:
 	def p_err(msg):
 		print(blue('[ ')+red('**')+blue(' ] ')+msg)
 		sys.exit(1)
+	def p_inf(msg):
+		print(blue('[ ')+turquoise('?!')+blue(' ] ')+msg)
 	def p_warn(msg):
 		print(blue('[ ')+yellow('!!')+blue(' ] ')+msg)
 	def p_ok(msg):
@@ -73,15 +76,19 @@ except ImportError:
 	def p_err(msg):
 		print('[ ** ] '+msg)
 		sys.exit(1)
+	def p_inf(msg):
+		print('[ ?! ] '+msg)
 	def p_warn(msg):
 		print('[ !! ] '+msg)
 	def p_ok(msg):
 		print('[ ok ]'+msg)
 
+# MODULE CHECK BEGIN
 # Checks for pyGTK presence, if not found raise a fatal error
 try:
 	import gtk
 	p_ok('Importing pygtk was successful')
+
 except ImportError:
 	p_err('Cannot import pygtk, do you have it installed?')
 
@@ -94,11 +101,35 @@ try:
 	p_ok('Psyco found. JIT compilation support enabled')
 except:
 	p_warn('Psyco not found. JIT compilation support is disabled')
-		
+# MODULE CHECK END		
 
 # This is the main xcode-gallery class
 class xcodegallery:
-	
+	def prep_cmdline(self, name, dest, type, thumb, master, imgpl, css, customopt):
+		p_inf('Prepairing the command line ...')
+		CMDLINE = "code-gallery "
+		if name is not "":
+			CMDLINE += '-n ' +name+ ' '
+		if dest is not "":
+			CMDLINE += '-d ' +dest+ ' '
+		if type is not "":
+			CMDLINE += '-f ' +type+ ' '
+		if thumb is not "":
+			CMDLINE += '-s ' +thumb+ ' '
+		if master is not "":
+			CMDLINE += '-S ' +master+ ' '
+		if imgpl is not "":
+			CMDLINE += '-l ' +imgpl+ ' '
+		if css is not "":
+			CMDLINE += '-c ' +css+ ' '
+		if customopt is not "":
+			CMDLINE += '-o ' +customopt+ ' '
+
+		p_inf('Using this commandline: '+CMDLINE)
+		p_inf('The following is the code-gallery output '+('-'*10))
+		os.system(CMDLINE)
+		p_inf('Code-gallery output end'+('-'*28))
+		
 	# We create an About dialog useful for users that wants to know who we are ;)
 	def about_dlg(self):
 		dlg = gtk.Dialog("About", None, gtk.DIALOG_MODAL, (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
@@ -106,6 +137,14 @@ class xcodegallery:
 		imgLogo.set_from_file("code-gallery.png")
 		dlg.vbox.pack_start(imgLogo)
 		dlg.vbox.pack_start(gtk.Label("(C) Copyright 2005 by Code-Gallery team"))
+		dlg.show_all()
+		dlg.set_position(gtk.WIN_POS_CENTER)
+		dlg.run()
+		dlg.destroy()
+
+	def error_dlg(self, msg):
+		dlg = gtk.Dialog("Error", None, gtk.DIALOG_MODAL, (gtk.STOCK_OK, gtk.RESPONCE_ACCEPT))
+		dlg.vbox.pack_start(gtk.Label("An error has occurred, here is the traceback\n"+msg))
 		dlg.show_all()
 		dlg.run()
 		dlg.destroy()
@@ -122,11 +161,11 @@ class xcodegallery:
 		hsep = gtk.HSeparator()
 		box.pack_start(hsep)
 		
-		cmdExit = gtk.Button("Exit")
+		cmdExit = gtk.Button("Exit", gtk.STOCK_QUIT)
 		cmdExit.connect("clicked", self.exit_xcode)
 		box.pack_start(cmdExit)
 		
-		cmdGenerate = gtk.Button("Generate")
+		cmdGenerate = gtk.Button(None, gtk.STOCK_EXECUTE)
 		cmdGenerate.connect("clicked", self.create_gallery)
 		box.pack_start(cmdGenerate)
 
@@ -136,48 +175,109 @@ class xcodegallery:
 	def make_gui_table(self):
 		table = gtk.Table(rows=8, columns=2)
 
-		lblGalleryname = gtk.Label("Gallery name")
+
+		#
+		# Gallery name table section
+		#
+		lblGalleryname = gtk.Label("Gallery name:")
+		lblGalleryname.set_justify(gtk.JUSTIFY_LEFT)
 		self.txtGalleryname = gtk.Entry()
-		table.attach(lblGalleryname, 0, 1, 1, 2)
-		table.attach(self.txtGalleryname, 1, 2, 1, 2)
+		table.attach(lblGalleryname, 0, 1, 0, 1)
+		table.attach(self.txtGalleryname, 1, 2, 0, 1)
 
-		lblDestination = gtk.Label("Destination")
+
+		#
+		# Gallery destination table section
+		#
+		lblDestination = gtk.Label("Destination:")
 		self.txtDestination = gtk.Entry()
-		table.attach(lblDestination, 0, 1, 2, 3)
-		table.attach(self.txtDestination, 1, 2, 2, 3)
+		table.attach(lblDestination, 0, 1, 1, 2)
+		table.attach(self.txtDestination, 1, 2, 1, 2)
+		
 
-		lblImageType = gtk.Label("Image Type")
-		table.attach(lblImageType, 0, 1, 3, 4)
+		
+		#
+		# Image type table section
+		#
+		lblImageTypes = gtk.Label("Image Type")
+		boxImageTypes = gtk.HBox()
+		self.optJPEG = gtk.RadioButton(None, "JPEG")
+		self.optPNG = gtk.RadioButton(self.optJPEG, "PNG")
+		boxImageTypes.pack_start(self.optJPEG)
+		boxImageTypes.pack_start(self.optPNG)
+		table.attach(lblImageTypes, 0, 1, 2, 3)
+		table.attach(boxImageTypes, 1, 2, 2, 3)
 
+
+		#
+		# Thumbnail table section
+		#
 		lblThumbnail = gtk.Label("Thumbnail size")
-		self.cboThumbnail = gtk.ComboBoxEntry()
-		table.attach(lblThumbnail, 0, 1, 4, 5)
-		table.attach(self.cboThumbnail, 1, 2, 4, 5)
+		self.txtThumbnail = gtk.Entry()
+		table.attach(lblThumbnail, 0, 1, 3, 4)
+		table.attach(self.txtThumbnail, 1, 2, 3, 4)
 
+
+		#
+		# Master table section
+		#
 		lblMaster = gtk.Label("Master size:")
-		self.cboMaster = gtk.ComboBoxEntry()
-		table.attach(lblMaster, 0, 1, 5, 6)
-		table.attach(self.cboMaster, 1, 2, 5, 6)
+		self.txtMaster = gtk.Entry()
+		table.attach(lblMaster, 0, 1, 4, 5)
+		table.attach(self.txtMaster, 1, 2, 4, 5)
 
-		lblCSS = gtk.Label("CSS support")
-		self.chkCSS = gtk.CheckButton("Enable CSS 2 stylesheet support")
+
+		#
+		# Images per line table section
+		#
+		lblImagespl = gtk.Label("Images per line:")
+		self.txtImagespl = gtk.Entry()
+		table.attach(lblImagespl, 0, 1, 5, 6)
+		table.attach(self.txtImagespl, 1, 2, 5, 6)
+
+
+		#
+		# CSS table section
+		#
+		lblCSS = gtk.Label("CSS Style:")
+		self.txtCSS = gtk.Entry()
+		self.txtCSS.set_text("blue")
 		table.attach(lblCSS, 0, 1, 6, 7)
-		table.attach(self.chkCSS, 1, 2, 6, 7)
+		table.attach(self.txtCSS, 1, 2, 6, 7)
+
+		#
+		# Custom options table section
+		#
+		lblCustom = gtk.Label("Custom Imagemagick options:")
+		self.txtCustomoptis = gtk.Entry()
+		table.attach(lblCustom, 0, 1, 7, 8)
+		table.attach(self.txtCustomoptis, 1, 2, 7, 8)
 
 		return table
+	
+	def make_status_box(self):
+		box = gtk.HBox()
+		self.lblStatus = gtk.Label("Status: Idle")
+		self.lblStatus.set_justify(gtk.JUSTIFY_LEFT)
+		box.pack_start(self.lblStatus)
+		return box
 	
 	# This is a container for buttons panel and gui table
 	def make_contents_box(self):
 		box = gtk.VBox()
 		box.pack_start(self.make_gui_table())
 		box.pack_start(self.make_buttonbox())
+		box.pack_start(self.make_status_box())
 		return box
 
 		
 	def __init__(self):
 		#Prepares main window
 		self.MainWindow = gtk.Window(gtk.WINDOW_TOPLEVEL)
+		self.MainWindow.set_position(gtk.WIN_POS_CENTER)
+		self.MainWindow.render_icon(gtk.STOCK_DIALOG_INFO, gtk.ICON_SIZE_BUTTON)
 		self.MainWindow.set_title(':: xcode-gallery ::')
+		self.MainWindow.set_border_width(5)
 		self.MainWindow.connect("destroy", self.destroy_app)
 
 		cBox = self.make_contents_box()
@@ -192,7 +292,25 @@ class xcodegallery:
 
 	# Called when the user press the "Create Gallery" button
 	def create_gallery(self, args):
-		pass
+		NAME = self.txtGalleryname.get_text()
+		DEST = self.txtDestination.get_text()
+		
+		if self.optJPEG.get_active() == True:
+			TYPE = "jpeg"
+		else:
+			TYPE = "png"
+			
+		THUMB = self.txtThumbnail.get_text()
+		MASTER = self.txtMaster.get_text()
+		IMGPL = self.txtImagespl.get_text()
+		CSS = self.txtCSS.get_text()
+		if CSS == "":
+			CSS = "blue"
+
+		CUSTOMOPTIS = self.txtCustomoptis.get_text()
+
+		self.prep_cmdline(NAME, DEST, TYPE, THUMB, MASTER, IMGPL, CSS, CUSTOMOPTIS)
+		# print("NAME: "+NAME+" DESTINATION: "+DEST+" TYPE: "+TYPE+" THUMB: "+THUMB+" IMGPL: "+IMGPL+" CUST: "+CUSTOMOPTIS)
 	
 	# This is called when the user press the "About" button
 	def about_xcode(self, args):
@@ -207,7 +325,7 @@ class xcodegallery:
 
 
 if __name__ == '__main__':
-	print_greet()
+	print(GREET)
 	startup = xcodegallery()
 	gtk.main()
 		
