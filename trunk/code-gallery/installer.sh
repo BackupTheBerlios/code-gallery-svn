@@ -79,11 +79,11 @@ else
 	echo -en "\033[0;36m>>> [WARNING] : You don't have the permission to copy code-gallery (and xcode-gallery) into /usr/bin/\n>>> I'll copy it into $HOME/bin/\033[m\n"
 	if [[ -d $HOME/bin ]]; then
 		cp ./code-gallery $HOME/bin
-		cp ../xcode-gallery/xcode-gallery $HOME/bin
+		cp ./xcode-gallery $HOME/bin
 	else
 		mkdir $HOME/bin
 		cp ./code-gallery $HOME/bin
-		cp ../xcode-gallery $HOME/bin
+		cp ./xcode-gallery $HOME/bin
 	fi
 
 fi
@@ -91,8 +91,4 @@ fi
 #
 # Finish message
 #
-#if [[ -n $(type -p dialog) ]]; then
-#	dialog --backtitle "Code-Gallery Installation" --msgbox "Code-Gallery installation is now complete.\n\nNOTE: The code-gallery GUI interface (xcode-gallery) was installed too. Before using it make sure that python, gtk and pygtk are installed." 0 0	
-#else
-#	echo -en "\n\033[1;32m>>> [MESSAGE] : Code-Gallery installation is now complete.\n\nNOTE: The code-gallery GUI interface (xcode-gallery) was installed too. Before using it make sure that python, gtk and pygtk are installed." 0 0	
-#fi
+echo -en "\n\033[1;32m>>> [MESSAGE] : Code-Gallery installation is now complete.\033[m\n\n\033[1;36m>>> [WARNING] : In order to run code-gallery, you need to type 'code-gallery' in your shell (if it is in your \$PATH). Type 'xcode-gallery' for code-gallery's gui\033[m\n\n\n\033[1;32mENJOY!\033[m\n\n"
