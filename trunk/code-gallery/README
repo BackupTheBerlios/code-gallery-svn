@@ -1,0 +1,71 @@
+Abstract
+--------
+Code-Gallery generates a gallery for your photos, providing several layouts and CSS styles, in order to let you choose a complex page if you don't need to edit it or a basic one if you are planning to use just its code.
+
+Requirements
+------------
+In order to run code-gallery, you need to install this software:
+
+	[1] Python-2.x
+	[2] ImageMagick-6.x
+	
+If you want to use the GTK gui, you also need:
+
+	[3] >= GTK-2.6.0
+	[4] >= PyGTK-2.6.0
+
+
+Installation
+------------
+Unpack the tat.bz2 provided and cd into the dir:
+
+	$ tar -xjf code-gallery-<release>.tar.bz2
+	$ cd code-gallery-<release>
+
+Now, switch user to root. If you don't have the permission, you can do it as user.
+Execute the installer and follow the instructions. At the end of the installation, 2 files will be created under /bin ( ~/bin ), and a new directory under /usr/share ( ~/.code-gallery/ ):
+
+	$ su -
+	# ./installer.sh
+
+
+Running code-gallery
+--------------------
+In order to run code-gallery, you need to type 'code-gallery' in your shell (if it is in your $PATH).
+
+	$ code-gallery
+
+If it doesn't work, just type the complete path:
+
+	$ /bin/code-gallery
+
+or, if you installed it by user:
+
+	$ ~/bin/code-gallery
+
+To run code-gallery's gui, just sobstitute code-gallery with xcode-gallery:
+
+	$ xcode-gallery
+
+or
+
+	$ /bin/xcode-gallery
+
+or
+
+	$ ~/bin/xcode-gallery
+
+
+Credits
+-------
+The following people have contributed to code-gallery in various ways:
+
+- jht <jht (at) autistici (dot) org>
+
+
+
+
+[1] Python	http://www.python.org/
+[2] ImageMagick http://www.imagemagick.org/
+[3] GTK		http://www.gtk.org/
+[4] PyGTK	http://www.pygtk.org/

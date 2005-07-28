@@ -72,7 +72,7 @@ if [[ $UID -eq 0 ]]; then
 
 	echo -en "\033[0;32m>>> [MESSAGE] : Coping exec file to /usr/bin/\033[m\n"
 	cp ./code-gallery /usr/bin/code-gallery
-	cp ../xcode-gallery/xcode-gallery /usr/bin/xcode-gallery
+	cp ./xcode-gallery /usr/bin/xcode-gallery
 
 else
 
@@ -83,7 +83,7 @@ else
 	else
 		mkdir $HOME/bin
 		cp ./code-gallery $HOME/bin
-		cp ../xcode-gallery/xcode-gallery $HOME/bin
+		cp ../xcode-gallery $HOME/bin
 	fi
 
 fi
@@ -91,8 +91,8 @@ fi
 #
 # Finish message
 #
-if [[ -n $(type -p dialog) ]]; then
-	dialog --backtitle "Code-Gallery Installation" --msgbox "Code-Gallery installation is now complete.\n\nNOTE: The code-gallery GUI interface (xcode-gallery) was installed too. Before using it make sure that python, gtk and pygtk are installed." 0 0	
-else
-	echo -en "\n\033[1;32m>>> [MESSAGE] : Code-Gallery installation is now complete.\n\nNOTE: The code-gallery GUI interface (xcode-gallery) was installed too. Before using it make sure that python, gtk and pygtk are installed." 0 0	
-fi
+#if [[ -n $(type -p dialog) ]]; then
+#	dialog --backtitle "Code-Gallery Installation" --msgbox "Code-Gallery installation is now complete.\n\nNOTE: The code-gallery GUI interface (xcode-gallery) was installed too. Before using it make sure that python, gtk and pygtk are installed." 0 0	
+#else
+#	echo -en "\n\033[1;32m>>> [MESSAGE] : Code-Gallery installation is now complete.\n\nNOTE: The code-gallery GUI interface (xcode-gallery) was installed too. Before using it make sure that python, gtk and pygtk are installed." 0 0	
+#fi

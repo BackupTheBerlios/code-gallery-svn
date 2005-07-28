@@ -134,7 +134,7 @@ class xcodegallery:
 	def about_dlg(self):
 		dlg = gtk.Dialog("About", None, gtk.DIALOG_MODAL, (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 		imgLogo = gtk.Image()
-		imgLogo.set_from_file("code-gallery.png")
+		imgLogo.set_from_file("logo.png")
 		dlg.vbox.pack_start(imgLogo)
 		dlg.vbox.pack_start(gtk.Label("(C) Copyright 2005 by Code-Gallery team"))
 		dlg.show_all()
