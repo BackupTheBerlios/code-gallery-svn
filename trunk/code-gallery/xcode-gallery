@@ -50,7 +50,7 @@
 #
 
 # imports standard modules
-import sys, os
+import sys, os, shutil
 
 # Default greeting
 GREET="""
@@ -105,6 +105,21 @@ except:
 
 # This is the main xcode-gallery class
 class xcodegallery:
+	# Sets the default resources path
+	HOMERES = os.environ['HOME']+'/.code-gallery'
+	RESPATH = None
+
+	# Sets the correct resources path for css stylesheet search and more
+	# (eh: logos, artwork and much more)
+	if os.path.exists(HOMERES):
+		RESPATH = HOMERES
+	else:
+		RESPATH = '/usr/share/code-gallery'
+	
+	print(RESPATH)
+	CSSs = os.listdir(RESPATH+'/css/')
+	LOGOPATH = RESPATH+'/logo.png'
+		
 	def prep_cmdline(self, name, dest, type, thumb, master, imgpl, css, customopt):
 		p_inf('Prepairing the command line ...')
 		CMDLINE = "code-gallery "
@@ -129,16 +144,22 @@ class xcodegallery:
 		p_inf('The following is the code-gallery output '+('-'*10))
 		os.system(CMDLINE)
 		p_inf('Code-gallery output end'+('-'*28))
+		self.info_dialog('Gallery creation done')
 		
 	# We create an About dialog useful for users that wants to know who we are ;)
 	def about_dlg(self):
 		dlg = gtk.Dialog("About", None, gtk.DIALOG_MODAL, (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 		imgLogo = gtk.Image()
-		imgLogo.set_from_file("logo.png")
+		imgLogo.set_from_file(self.LOGOPATH)
 		dlg.vbox.pack_start(imgLogo)
 		dlg.vbox.pack_start(gtk.Label("(C) Copyright 2005 by Code-Gallery team"))
 		dlg.show_all()
 		dlg.set_position(gtk.WIN_POS_CENTER)
+		dlg.run()
+		dlg.destroy()
+	
+	def info_dialog(self, message):
+		dlg = gtk.MessageBox(None, gtk.DIALOG_MODAL, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, message)
 		dlg.run()
 		dlg.destroy()
 
@@ -161,11 +182,11 @@ class xcodegallery:
 		hsep = gtk.HSeparator()
 		box.pack_start(hsep)
 		
-		cmdExit = gtk.Button("Exit", gtk.STOCK_QUIT)
+		cmdExit = gtk.Button("Exit")
 		cmdExit.connect("clicked", self.exit_xcode)
 		box.pack_start(cmdExit)
 		
-		cmdGenerate = gtk.Button(None, gtk.STOCK_EXECUTE)
+		cmdGenerate = gtk.Button("Create Gallery")
 		cmdGenerate.connect("clicked", self.create_gallery)
 		box.pack_start(cmdGenerate)
 
@@ -240,10 +261,15 @@ class xcodegallery:
 		# CSS table section
 		#
 		lblCSS = gtk.Label("CSS Style:")
-		self.txtCSS = gtk.Entry()
-		self.txtCSS.set_text("blue")
+		self.cboCSS = gtk.combo_box_new_text()
+		self.cboCSS.append_text('blue')
+		for val in self.CSSs:
+			totlen = len(val)
+			cut = val[:totlen-4]
+			self.cboCSS.append_text(cut)
+		self.cboCSS.set_active(0)
 		table.attach(lblCSS, 0, 1, 6, 7)
-		table.attach(self.txtCSS, 1, 2, 6, 7)
+		table.attach(self.cboCSS, 1, 2, 6, 7)
 
 		#
 		# Custom options table section
@@ -303,14 +329,17 @@ class xcodegallery:
 		THUMB = self.txtThumbnail.get_text()
 		MASTER = self.txtMaster.get_text()
 		IMGPL = self.txtImagespl.get_text()
-		CSS = self.txtCSS.get_text()
-		if CSS == "":
-			CSS = "blue"
+		
+		model = self.cboCSS.get_model()
+		active = self.cboCSS.get_active()
+		if active < 0:
+			return None
+		CSS =  model[active][0]
 
 		CUSTOMOPTIS = self.txtCustomoptis.get_text()
 
 		self.prep_cmdline(NAME, DEST, TYPE, THUMB, MASTER, IMGPL, CSS, CUSTOMOPTIS)
-		# print("NAME: "+NAME+" DESTINATION: "+DEST+" TYPE: "+TYPE+" THUMB: "+THUMB+" IMGPL: "+IMGPL+" CUST: "+CUSTOMOPTIS)
+		# print(NAME, DEST, TYPE, THUMB, MASTER, IMGPL, CSS, CUSTOMOPTIS)
 	
 	# This is called when the user press the "About" button
 	def about_xcode(self, args):

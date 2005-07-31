@@ -64,6 +64,7 @@ fi
 mkdir $DIR
 mkdir $DIR/css
 cp ./css/* $DIR/css/
+cp logo.png $DIR
 
 #
 # Code-gallery copy

@@ -17,7 +17,7 @@ If you want to use the GTK gui, you also need:
 
 Installation
 ------------
-Unpack the tat.bz2 provided and cd into the dir:
+Unpack the tar.bz2 provided and cd into the dir:
 
 	$ tar -xjf code-gallery-<release>.tar.bz2
 	$ cd code-gallery-<release>
