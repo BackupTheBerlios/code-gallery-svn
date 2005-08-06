@@ -57,7 +57,7 @@ from shutil import copyfile, move, rmtree
  
 # define configuration vars
 PROG_NAME="Code-Gallery"
-PROG_VERSION="0.5-beta2"
+PROG_VERSION="0.9-alpha1"
 PROG_DESCR="An useful python program that aim to write simple and costumizable xhtml 1.0 validated page galleries"
 AUTHOR="Marco Squarcina <lavish@gmail.com>"
 
@@ -76,6 +76,8 @@ IMGS_PER_LINE = 4
 CUSTOM_OPS = ''
 LAYOUT = 0
 CSS = 'blue'
+
+ENABLE_HACK = False
  
 # define help var
 HELP="""format:
@@ -182,7 +184,7 @@ def read_args():
  
         # exception : if all is good read the arguments, alse print a message and exit
         try:
-                opts, args = getopt.getopt(sys.argv[1:], "hvVd:n:s:S:f:l:o:c:L:", [ "help", "version", "verbose", "dir=", "gallery-name=", "thumbnail-size=", "master-size=", "file-type=", "images-per-line=", "custom-cnv-options=", "css=", "style=" ])
+                opts, args = getopt.getopt(sys.argv[1:], "hvVxd:n:s:S:f:l:o:c:L:", [ "help", "version", "verbose", "xcode-gallery", "dir=", "gallery-name=", "thumbnail-size=", "master-size=", "file-type=", "images-per-line=", "custom-cnv-options=", "css=", "style=" ])
         except getopt.GetoptError:
                 print 'Usage: for the list of all options type \'code-gallery --help\'\n'
                 sys.exit(2)
@@ -198,6 +200,7 @@ def read_args():
         global CUSTOM_OPS
         global CSS
         global LAYOUT 
+	global ENABLE_HACK # --lavish-- This is a temporary (I hope) workaround in order to avoid problems with the GUI
  
         # read values and assign them to vars
         for o, a in opts:
@@ -213,6 +216,9 @@ def read_args():
  
                 if o in ("-V", "--verbose"):
                         VERBOSE = True
+
+		if o in ("-x", "--xcode-gallery"):
+			ENABLE_HACK = True
  
                 if o in ("-d", "--dir"):
                         if(os.path.isdir(a)):
@@ -387,9 +393,12 @@ def progress(i):
 
 	global n_file
 	
-	if (VERBOSE == False):
-		print('\r' +  (str(100 * int(i) / int(n_file)) + '%')),
-		sys.stdout.flush()
+	if (VERBOSE is False):
+		if (ENABLE_HACK):
+			print(str(100 * int(i) / int(n_file)) + '%')
+		else:
+			print('\r' +  (str(100 * int(i) / int(n_file)) + '%')),
+			sys.stdout.flush()
              
 
 def write_html():
