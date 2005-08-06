@@ -122,7 +122,7 @@ class xcodegallery:
 		
 	def prep_cmdline(self, name, dest, type, thumb, master, imgpl, css, customopt):
 		p_inf('Prepairing the command line ...')
-		CMDLINE = "code-gallery "
+		CMDLINE = "code-gallery -x "
 		if name is not "":
 			CMDLINE += '-n ' +name+ ' '
 		if dest is not "":
@@ -141,9 +141,15 @@ class xcodegallery:
 			CMDLINE += '-o ' +customopt+ ' '
 
 		p_inf('Using this commandline: '+CMDLINE)
-		p_inf('The following is the code-gallery output '+('-'*10))
-		os.system(CMDLINE)
-		p_inf('Code-gallery output end'+('-'*28))
+		
+		# p_inf('The following is the code-gallery output '+('-'*10))
+		
+		handle = os.popen(CMDLINE)
+		status = handle.close()
+		if status is not None:
+			self.info_dialog("There was an error processing your data")
+			
+		# p_inf('Code-gallery output end'+('-'*28))
 		self.info_dialog('Gallery creation done')
 		
 	# We create an About dialog useful for users that wants to know who we are ;)
@@ -159,7 +165,7 @@ class xcodegallery:
 		dlg.destroy()
 	
 	def info_dialog(self, message):
-		dlg = gtk.MessageBox(None, gtk.DIALOG_MODAL, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, message)
+		dlg = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, message)
 		dlg.run()
 		dlg.destroy()
 
