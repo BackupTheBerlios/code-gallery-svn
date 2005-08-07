@@ -106,15 +106,9 @@ except:
 # This is the main xcode-gallery class
 class xcodegallery:
 	# Sets the default resources path
-	HOMERES = os.environ['HOME']+'/.code-gallery'
-	RESPATH = None
-
-	# Sets the correct resources path for css stylesheet search and more
-	# (eh: logos, artwork and much more)
-	if os.path.exists(HOMERES):
-		RESPATH = HOMERES
-	else:
-		RESPATH = '/usr/share/code-gallery'
+	DIRS = ['/usr/share/code-gallery', os.environ['HOME']+'/.code-gallery', os.getcwd()]
+	for val in DIRS:
+		if os.path.exists(val): RESPATH = val; print('using '+RESPATH)
 	
 	print(RESPATH)
 	CSSs = os.listdir(RESPATH+'/css/')
@@ -140,23 +134,18 @@ class xcodegallery:
 		if customopt is not "":
 			CMDLINE += '-o ' +customopt+ ' '
 
-		p_inf('Using this commandline: '+CMDLINE)
-		
-		# p_inf('The following is the code-gallery output '+('-'*10))
-		
+		p_inf('Using this commandline: '+CMDLINE)		
 		handle = os.popen(CMDLINE)
 		status = handle.close()
 		if status is not None:
 			self.info_dialog("There was an error processing your data")
-			
-		# p_inf('Code-gallery output end'+('-'*28))
 		self.info_dialog('Gallery creation done')
 		
 	# We create an About dialog useful for users that wants to know who we are ;)
 	def about_dlg(self):
 		dlg = gtk.Dialog("About", None, gtk.DIALOG_MODAL, (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 		imgLogo = gtk.Image()
-		imgLogo.set_from_file(self.LOGOPATH)
+		imgLogo.set_from_file(self.RESPATH+'/logo.png')
 		dlg.vbox.pack_start(imgLogo)
 		dlg.vbox.pack_start(gtk.Label("(C) Copyright 2005 by Code-Gallery team"))
 		dlg.show_all()
