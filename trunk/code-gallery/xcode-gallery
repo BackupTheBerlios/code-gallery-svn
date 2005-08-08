@@ -108,11 +108,9 @@ class xcodegallery:
 	# Sets the default resources path
 	DIRS = ["/usr/share/code-gallery", os.environ['HOME']+'/.code-gallery']
 	for val in DIRS:
-		if os.path.exists(val): RESPATH = val; print('using '+RESPATH)
+		if os.path.exists(val): RESPATH = val; p_inf('using '+RESPATH)
 	
-	print(RESPATH)
 	CSSs = os.listdir(RESPATH+'/css/')
-	print CSSs
 	LOGOPATH = RESPATH+'/logo.png'
 		
 	def prep_cmdline(self, name, dest, type, thumb, master, imgpl, css, customopt):
@@ -147,7 +145,7 @@ class xcodegallery:
 		dlg = gtk.Dialog("About", None, gtk.DIALOG_MODAL, (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 		imgLogo = gtk.Image()
 		imgLogo.set_from_file(self.RESPATH+'/logo.png')
-		lblAbout = gtk.Label("<b>(C) Copyright 2005 by Code-Gallery team\n</b><b><big>Visit the project website: http://code-gallery.berlios.de</big></b>\n\nDevelopers:\n<i>Lavish: lavish@gmail.com</i>\n<i>Arbiter: arbitermc@gmail.com, code-gallery@arbitermc.net</i>\n<i>Pizzak: gianni.zacchia@gmail.com</i>")
+		lblAbout = gtk.Label("<b>(C) Copyright 2005 by Code-Gallery Team\n</b><b><big>http://code-gallery.berlios.de</big></b>\n\nDevelopers:\n<i>Lavish: lavish@gmail.com</i>\n<i>Arbiter: arbitermc@gmail.com, code-gallery@arbitermc.net</i>\n<i>Pizzak: gianni.zacchia@gmail.com</i>")
 		lblAbout.set_use_markup(True)
 		dlg.vbox.pack_start(imgLogo)
 		dlg.vbox.pack_start(lblAbout)
