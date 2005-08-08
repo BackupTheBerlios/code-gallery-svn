@@ -106,12 +106,13 @@ except:
 # This is the main xcode-gallery class
 class xcodegallery:
 	# Sets the default resources path
-	DIRS = ['/usr/share/code-gallery', os.environ['HOME']+'/.code-gallery', os.getcwd()]
+	DIRS = ["/usr/share/code-gallery", os.environ['HOME']+'/.code-gallery']
 	for val in DIRS:
 		if os.path.exists(val): RESPATH = val; print('using '+RESPATH)
 	
 	print(RESPATH)
 	CSSs = os.listdir(RESPATH+'/css/')
+	print CSSs
 	LOGOPATH = RESPATH+'/logo.png'
 		
 	def prep_cmdline(self, name, dest, type, thumb, master, imgpl, css, customopt):
