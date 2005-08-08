@@ -147,18 +147,26 @@ class xcodegallery:
 		dlg = gtk.Dialog("About", None, gtk.DIALOG_MODAL, (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 		imgLogo = gtk.Image()
 		imgLogo.set_from_file(self.RESPATH+'/logo.png')
+		lblAbout = gtk.Label("<b>(C) Copyright 2005 by Code-Gallery team\n</b><b><big>Visit the project website: http://code-gallery.berlios.de</big></b>\n\nDevelopers:\n<i>Lavish: lavish@gmail.com</i>\n<i>Arbiter: arbitermc@gmail.com, code-gallery@arbitermc.net</i>\n<i>Pizzak: gianni.zacchia@gmail.com</i>")
+		lblAbout.set_use_markup(True)
 		dlg.vbox.pack_start(imgLogo)
-		dlg.vbox.pack_start(gtk.Label("(C) Copyright 2005 by Code-Gallery team"))
+		dlg.vbox.pack_start(lblAbout)
 		dlg.show_all()
 		dlg.set_position(gtk.WIN_POS_CENTER)
 		dlg.run()
 		dlg.destroy()
+	
+
+
 	
 	def info_dialog(self, message):
 		dlg = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, message)
 		dlg.run()
 		dlg.destroy()
 
+	
+	
+	
 	def error_dlg(self, msg):
 		dlg = gtk.Dialog("Error", None, gtk.DIALOG_MODAL, (gtk.STOCK_OK, gtk.RESPONCE_ACCEPT))
 		dlg.vbox.pack_start(gtk.Label("An error has occurred, here is the traceback\n"+msg))
@@ -167,6 +175,9 @@ class xcodegallery:
 		dlg.destroy()
 
 		
+	
+	
+	
 	# Creates a Horizontal Box that contains the action buttons	
 	def make_buttonbox(self):
 		box = gtk.HBox()
@@ -187,6 +198,9 @@ class xcodegallery:
 		box.pack_start(cmdGenerate)
 
 		return box
+	
+	
+	
 	
 	# Creates the main gui table
 	def make_gui_table(self):
@@ -284,12 +298,18 @@ class xcodegallery:
 
 		return table
 	
+	
+	
+	
 	def make_status_box(self):
 		box = gtk.HBox()
 		self.lblStatus = gtk.Label("Status: Idle")
 		self.lblStatus.set_justify(gtk.JUSTIFY_LEFT)
 		box.pack_start(self.lblStatus)
 		return box
+	
+	
+	
 	
 	# This is a container for buttons panel and gui table
 	def make_contents_box(self):
@@ -300,6 +320,8 @@ class xcodegallery:
 		return box
 
 		
+	
+	
 	def __init__(self):
 		#Prepares main window
 		self.MainWindow = gtk.Window(gtk.WINDOW_TOPLEVEL)
@@ -315,10 +337,14 @@ class xcodegallery:
 		self.MainWindow.show_all()
 
 	
+	
+	
 	# Called when closing the application
 	def destroy_app(self, arg):
 		gtk.main_quit()
 
+	
+	
 	# Called when the user press the "Create Gallery" button
 	def create_gallery(self, args):
 		NAME = self.txtGalleryname.get_text()
@@ -344,10 +370,14 @@ class xcodegallery:
 		self.prep_cmdline(NAME, DEST, TYPE, THUMB, MASTER, IMGPL, CSS, CUSTOMOPTIS)
 		# print(NAME, DEST, TYPE, THUMB, MASTER, IMGPL, CSS, CUSTOMOPTIS)
 	
+	
+	
 	# This is called when the user press the "About" button
 	def about_xcode(self, args):
 		self.about_dlg()
 		
+	
+	
 	# Called when we need to close the application
 	def exit_xcode(self, args):
 		# Quit from the gtk loop
