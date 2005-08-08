@@ -247,9 +247,13 @@ class xcodegallery:
 		# Images per line table section
 		#
 		lblImagespl = gtk.Label("Images per line:")
-		self.txtImagespl = gtk.Entry()
+		spinAdjustment = gtk.Adjustment(value=0, lower=0, upper=99999, step_incr=1, page_incr=0, page_size=0)
+		self.cboImagespl = gtk.SpinButton(adjustment=spinAdjustment, climb_rate=0.1, digits=0)
+		self.cboImagespl.set_numeric(True)
+		self.cboImagespl.set_wrap(True)
+		self.cboImagespl.spin(gtk.SPIN_STEP_FORWARD, 1)
 		table.attach(lblImagespl, 0, 1, 5, 6)
-		table.attach(self.txtImagespl, 1, 2, 5, 6)
+		table.attach(self.cboImagespl, 1, 2, 5, 6)
 
 
 		#
@@ -258,11 +262,14 @@ class xcodegallery:
 		lblCSS = gtk.Label("CSS Style:")
 		self.cboCSS = gtk.combo_box_new_text()
 		self.cboCSS.append_text('blue')
+
+		# This piece of code retrieves the CSS installed in your theme directory
 		for val in self.CSSs:
 			totlen = len(val)
 			cut = val[:totlen-4]
 			self.cboCSS.append_text(cut)
 		self.cboCSS.set_active(0)
+		
 		table.attach(lblCSS, 0, 1, 6, 7)
 		table.attach(self.cboCSS, 1, 2, 6, 7)
 
@@ -323,7 +330,7 @@ class xcodegallery:
 			
 		THUMB = self.txtThumbnail.get_text()
 		MASTER = self.txtMaster.get_text()
-		IMGPL = self.txtImagespl.get_text()
+		IMGPL = str(self.cboImagespl.get_value_as_int())
 		
 		model = self.cboCSS.get_model()
 		active = self.cboCSS.get_active()
