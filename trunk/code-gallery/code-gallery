@@ -57,7 +57,7 @@ from shutil import copyfile, move, rmtree
  
 # define configuration vars
 PROG_NAME="Code-Gallery"
-PROG_VERSION="0.9-alpha1"
+PROG_VERSION="0.9-svn"
 PROG_DESCR="An useful python program that aim to write simple and costumizable xhtml 1.0 validated page galleries"
 AUTHOR="Marco Squarcina <lavish@gmail.com>"
 
@@ -69,6 +69,7 @@ png = ['png','PNG']
 
 VERBOSE = False
 GALLERY_NAME = 'Gallery'
+HTML_NAME = 'index.html'
 THUMBNAIL_SIZE = '100x75'
 MASTER_SIZE = 'original'
 IMAGE_FORMAT = 'jpg'
@@ -90,6 +91,7 @@ HELP="""format:
 -V              [--verbose]                : Print a verbose output
 -d              [--dir]                    : Change the working directory
 -n              [--gallery-name]           : Set gallery name. 'My Gallery' is the default
+-N              [--html-name]		   : Set html file name. 'index' is the default. Do not use any html extension here
 -s              [--thumbnail-size]         : Set size for thumbnails
 -S              [--master-size]            : Set size for master images
 -f              [--file-type]              : Set image format (.jpg or .png). jpg is the default
@@ -184,7 +186,7 @@ def read_args():
  
         # exception : if all is good read the arguments, alse print a message and exit
         try:
-                opts, args = getopt.getopt(sys.argv[1:], "hvVxd:n:s:S:f:l:o:c:L:", [ "help", "version", "verbose", "xcode-gallery", "dir=", "gallery-name=", "thumbnail-size=", "master-size=", "file-type=", "images-per-line=", "custom-cnv-options=", "css=", "style=" ])
+                opts, args = getopt.getopt(sys.argv[1:], "hvVxd:n:N:s:S:f:l:o:c:L:", [ "help", "version", "verbose", "xcode-gallery", "dir=", "gallery-name=", "html-name=", "thumbnail-size=", "master-size=", "file-type=", "images-per-line=", "custom-cnv-options=", "css=", "style=" ])
         except getopt.GetoptError:
                 print 'Usage: for the list of all options type \'code-gallery --help\'\n'
                 sys.exit(2)
@@ -193,6 +195,7 @@ def read_args():
         # define all the vars as "global". all these vars cuold be assigned by user
         global VERBOSE
         global GALLERY_NAME
+	global HTML_NAME
         global THUMBNAIL_SIZE
         global MASTER_SIZE
         global IMAGE_FORMAT
@@ -206,8 +209,7 @@ def read_args():
         for o, a in opts:
  
                 if o in ("-v", "--version"):
-                        print(PROG_NAME + ' v' + PROG_VERSION + '\n')
-                        print('(C)Copyright 2005 by Lavish and Contributors\n')
+                        print(PROG_NAME + ' v' + PROG_VERSION )
                         sys.exit(0)
  
                 if o in ("-h", "--help"):
@@ -221,15 +223,13 @@ def read_args():
 			ENABLE_HACK = True
  
                 if o in ("-d", "--dir"):
-                        if(os.path.isdir(a)):
-                                os.chdir(a)
-                        else:
-				print
-                                print_err(a + ' is NOT a valid directory\n')
-                                sys.exit(1)
+			chdir(a)
  
                 if o in ("-n", "--gallery-name"):
                         GALLERY_NAME = a
+
+		if o in ("-N", "--html-name"):
+                        HTML_NAME = a + '.html'
  
                 if o in ("-s", "--thumbnail-size"):
                         THUMBNAIL_SIZE = a
@@ -258,6 +258,15 @@ def usage():
         print ('\n' + HELP)
         sys.exit(0)
  
+
+def chdir(path):
+	if(os.path.isdir(path)):
+        	os.chdir(path)
+	else:
+		print
+        	print_err(path + ' is NOT a valid directory\n')
+                sys.exit(1)
+
 
 def type(f):
 	if (IMAGE_FORMAT in jpg):
@@ -404,6 +413,7 @@ def progress(i):
 def write_html():
 
 
+	global HTML_NAME
 	global html_code, file_list
 
 	
@@ -436,7 +446,7 @@ def write_html():
 
 		footer()
         
-		write_file('index.html', html_code)
+		write_file('HTML_NAME', html_code)
 
 	# Layout n.1 xhtml 1.0 transitional with some javascript in order to open pop-up windows
 	# --lavish-- we have to write this code, obviously ;)
@@ -477,7 +487,7 @@ def write_html():
 
 		footer()
         
-		write_file('index.html', html_code)
+		write_file('HTML_NAME', html_code)
 
 	else:
 		print
@@ -487,6 +497,7 @@ def write_html():
 
 def main():
 	
+	global HTML_NAME
 	global n_file, file_list
 	
 	read_args()
@@ -530,7 +541,7 @@ def main():
  	write_html()
 	print '\n'
         print_ok('... DONE! \n')
-	print_ok('Writing index.html')
+	print_ok('Writing ' + HTML_NAME)
        
 	if (CSS == 'none'):
 		print_warn('No CSS defined')
