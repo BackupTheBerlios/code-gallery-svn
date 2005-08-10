@@ -24,9 +24,7 @@
 #  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA     #
 #                                                                                 #
 ###################################################################################
-#
-# Last Change by LAVISH on 28/07/2005 @ 00:32
-#
+# 
 # To Devels : 
 #             Please, insert comments and output ONLY in ENGLISH!
 #             If you are unsure about anything and you want to check it later,
@@ -36,7 +34,7 @@
 #             
 #	      example:
 #
-#             # --lavish-- I don't think this is a nice solution...
+#             # --lavish-- I think that this function sux!
 #
 # Lavish
 #
@@ -446,7 +444,7 @@ def write_html():
 
 		footer()
         
-		write_file('HTML_NAME', html_code)
+		write_file(HTML_NAME, html_code)
 
 	# Layout n.1 xhtml 1.0 transitional with some javascript in order to open pop-up windows
 	# --lavish-- we have to write this code, obviously ;)
@@ -487,7 +485,7 @@ def write_html():
 
 		footer()
         
-		write_file('HTML_NAME', html_code)
+		write_file(HTML_NAME, html_code)
 
 	else:
 		print
