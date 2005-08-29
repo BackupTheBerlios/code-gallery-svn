@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #__  _____ ___   __| | ___        __ _  __ _| | | ___ _ __ _   _
 #\ \/ / __/ _ \ / _` |/ _ \_____ / _` |/ _` | | |/ _ \ '__| | | |
 # >  < (_| (_) | (_| |  __/_____| (_| | (_| | | |  __/ |  | |_| |
@@ -50,23 +49,12 @@
 #
 ####################################################################################
 
-import os
-import sys
 import gtk
 import gtk.glade
+from gui import MainWindow
 
-HEADER="""
-__  _____ ___   __| | ___        __ _  __ _| | | ___ _ __ _   _
-\ \/ / __/ _ \ / _` |/ _ \_____ / _` |/ _` | | |/ _ \ '__| | | |
- >  < (_| (_) | (_| |  __/_____| (_| | (_| | | |  __/ |  | |_| |
-/_/\_\___\___/ \__,_|\___|      \__, |\__,_|_|_|\___|_|   \__, |
-                                |___/                     |___/
-"""
-
-if __name__ == "__main__":
-	paths = [os.getcwd()+'/xcode','/usr/share/code-gallery',os.environ['HOME']+'./code-gallery']
-	
-	sys.path.append('xcode')
-	print HEADER
-	import main
-	main.Main()
+class Main:
+	def __init__(self):
+		print('Starting...')
+		MainWindow.MainWindow()		
+		gtk.main()
