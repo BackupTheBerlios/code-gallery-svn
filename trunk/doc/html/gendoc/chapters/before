@@ -1,0 +1,18 @@
+<h2>Before you start</h2>
+
+<em><strong>Please read carefully!!</strong></em>
+
+<strong>Requirements</strong>
+<p>
+	Code-Gallery have some fondamental requirements:
+	<ul>
+		<li>Python 2.4 or higher</li>
+		<li>ImageMagick 6 or higher</li>
+	</ul>
+	And if you want to use the GUI the extra requirements are:
+	<ul>
+		<li>GTK+ 2.6 or higher</li>
+		<li>PyGTK 2.6 or hogher</li>
+		<li>libglade 2 or higher</li>
+	</ul>
+</p>

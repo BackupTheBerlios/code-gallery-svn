@@ -1,0 +1,25 @@
+<h2>Installation</h2>
+
+<p>
+Code-Gallery installation (at the moment) is based on a shellscript
+called installer.sh<br/>
+With the shellscript you can easily install this program as root (using prefix /usr)
+or as a user (using prefix ~/.code-gallery and ~/bin for symbolic links).
+</p>
+
+<p>
+To install the program simply launch the shellscript using <br/>
+<code>sh installer.sh</code>
+</p>
+
+<p>
+The shellscript will automagically detect if you have root privileges
+and (always automagically ;-) ) will allow you an environment installation.
+Otherwise (eg: you are a normal user) you can perform a local installation only.
+</p>
+
+<p>
+Once the shellscript detects your rights it will display some simple questions.
+Answer to them with either Y or N. Questions are very simple to understand
+so we don't explain them here.
+</p>

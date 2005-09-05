@@ -1,0 +1,24 @@
+<h2>The Team</h2>
+
+<p>The team is composed by:</p>
+<ul>
+	<li>
+		Marco Squarcina aka Lavish - E-mail: lavish@gmail.com - Web: http://lavish.homelinux.org
+		<ul>
+		<li>project coordination</li>
+		<li>code-gallery's commandline program</li>
+		<li>web site</li>
+		<li>installer</li>
+		<li>artwork</li>
+		<li>documentation</li>
+		</ul>
+	</li>
+	<li>
+		Lorenzo Villani aka Arbiter - E-mail: arbitermc@gmail.com - Web: http://www.arbitermc.net || http://arbiter.homelinux.org
+		<ul>
+		<li>code-gallery's gui (aka xcode-gallery)</li>
+		<li>installer</li>
+		<li>documentation</li>
+		</ul>
+	</li>
+</ul>

@@ -1,0 +1,41 @@
+#!/bin/bash
+
+echo " .:*:. GenDoc - Created by Arbiter in 2005 .:*:."
+echo ""
+echo ""
+echo -n ">>> Cleaning toplevel directory..."
+rm -dfR ../chapters
+rm -dfR ../images
+rm -dfR ../index.html
+rm -dfR ../style.css
+echo "done."
+
+echo -n ">>> Recreating folder structure..."
+mkdir ../chapters
+cp -r images ../
+cp style.css ../
+echo "done."
+
+echo -n ">>> Creating index.html..."
+cat master_begin index master_end > ../index.html.1
+sed {s/"\[level\]"/""/} ../index.html.1 > ../index.html
+rm ../index.html.1
+echo "done."
+
+echo ">>> Creating Chapters <<<"
+cd chapters
+for chap in *
+do
+	echo -n ">>> Creating chapter: $chap ..."
+	cat ../master_begin $chap ../master_end > ../../chapters/${chap}.html.1
+
+	# Transformations
+	sed {s/"\[level\]"/"..\/"/} ../../chapters/${chap}.html.1 > ../../chapters/${chap}.html
+
+	#Cleanup
+	rm ../../chapters/${chap}.html.1
+
+	#Done
+	echo "done."
+done
+
